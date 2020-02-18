@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'camera.dart';
 
-Future<Null> main() async {
-  List<CameraDescription> cameras = await availableCameras();
-  runApp(app());
-}
+List<CameraDescription> cameras;
+
+void main() => runApp(app());
 
 class app extends StatelessWidget {
   @override
@@ -30,7 +29,12 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera),
-        onPressed: () {},
+        onPressed: () async {
+          cameras = await availableCameras();
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return camerascreen(cameras);
+          }));
+        },
       ),
     );
   }
