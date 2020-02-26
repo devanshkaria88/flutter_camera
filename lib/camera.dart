@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:camera_playground/main.dart';
 import 'package:flutter/material.dart';
 
 class camerascreen extends StatefulWidget {
@@ -16,7 +17,8 @@ class _camerascreenState extends State<camerascreen> {
   @override
   void initState() {
     super.initState();
-    controller = new CameraController(widget.cameras[0], ResolutionPreset.max);
+    print(cameras);
+    controller = CameraController(widget.cameras[0], ResolutionPreset.max);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -33,12 +35,49 @@ class _camerascreenState extends State<camerascreen> {
 
   @override
   Widget build(BuildContext context) {
+    void switchCameras() {
+      print('Cameras swithced');
+      final CameraDescription cameraDescription =
+          (controller.description == widget.cameras[0])
+              ? widget.cameras[1]
+              : widget.cameras[0];
+      controller = CameraController(cameraDescription, ResolutionPreset.max,
+          enableAudio: true);
+      controller.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
+      });
+    }
+
     if (!controller.value.isInitialized) {
-      return Container();
+      return Container(
+        color: Colors.blue,
+      );
     }
     return AspectRatio(
       aspectRatio: controller.value.aspectRatio,
-      child: CameraPreview(controller),
+      child: Stack(
+        children: <Widget>[
+          Container(
+              child: CameraPreview(controller),
+            height: 500,
+          ),
+          Positioned(
+            child: GestureDetector(
+              onTap: switchCameras,
+              child: Icon(
+                Icons.cached,
+                size: 50.0,
+                color: Colors.white,
+              ),
+            ),
+            left: MediaQuery.of(context).size.width - 90,
+            bottom: MediaQuery.of(context).size.height - 100,
+          )
+        ],
+      ),
     );
   }
 }
