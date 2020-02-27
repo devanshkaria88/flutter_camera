@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:camera_playground/main.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,12 @@ class camerascreen extends StatefulWidget {
 
 class _camerascreenState extends State<camerascreen> {
   CameraController controller;
+
+  void captureImage() async {
+    if (controller.value.isInitialized) {
+      final Directory extDir = await Director
+    }
+  }
 
   @override
   void initState() {
@@ -56,28 +64,48 @@ class _camerascreenState extends State<camerascreen> {
         color: Colors.blue,
       );
     }
-    return AspectRatio(
-      aspectRatio: controller.value.aspectRatio,
-      child: Stack(
-        children: <Widget>[
-          Container(
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: 110,
+          child: Container(
+            height: MediaQuery.of(context).size.height / 1.55,
+            width: MediaQuery.of(context).size.width,
+            child: AspectRatio(
               child: CameraPreview(controller),
-            height: 500,
-          ),
-          Positioned(
-            child: GestureDetector(
-              onTap: switchCameras,
-              child: Icon(
-                Icons.cached,
-                size: 50.0,
-                color: Colors.white,
-              ),
+              aspectRatio: 1.33,
             ),
-            left: MediaQuery.of(context).size.width - 90,
-            bottom: MediaQuery.of(context).size.height - 100,
-          )
-        ],
-      ),
+          ),
+        ),
+        Positioned(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              GestureDetector(
+                onTap: switchCameras,
+                child: Icon(
+                  Icons.cached,
+                  size: 40.0,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              GestureDetector(
+                onTap: switchCameras,
+                child: Icon(
+                  Icons.cached,
+                  size: 40.0,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          bottom: MediaQuery.of(context).size.height - 100,
+        )
+      ],
     );
   }
 }
