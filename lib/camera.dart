@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:camera_playground/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class camerascreen extends StatefulWidget {
   List<CameraDescription> cameras;
@@ -15,10 +17,17 @@ class camerascreen extends StatefulWidget {
 
 class _camerascreenState extends State<camerascreen> {
   CameraController controller;
+  var _timestamp = DatePickerDateTimeOrder.date_time_dayPeriod;
 
   void captureImage() async {
     if (controller.value.isInitialized) {
-      final Directory extDir = await Director
+      final Directory extDir = await getApplicationDocumentsDirectory();
+      final String dirPath = '${extDir.path}/media';
+      await Directory(dirPath).create(recursive: true);
+      final String filePath = '$dirPath/$_timestamp.jpeg';
+      await controller.takePicture(filePath);
+      print('Image is Captured');
+      setState(() {});
     }
   }
 
@@ -104,6 +113,17 @@ class _camerascreenState extends State<camerascreen> {
             ],
           ),
           bottom: MediaQuery.of(context).size.height - 100,
+        ),
+        Positioned(
+          bottom: 70.0,
+          left: MediaQuery.of(context).size.width * 0.5 - 35,
+          child: GestureDetector(
+            child: CircleAvatar(
+              radius: 35,
+              backgroundColor: Colors.white,
+            ),
+            onTap: captureImage,
+          ),
         )
       ],
     );
